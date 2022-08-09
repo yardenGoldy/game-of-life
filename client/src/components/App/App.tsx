@@ -9,6 +9,7 @@ export type AppState = {
 	stopEnabled: boolean
 }
 
+// todo: remove it and use the enum from the shared 
 export enum state
 {
     unpopulated = 0,
