@@ -30,7 +30,9 @@ export class App extends React.PureComponent<{}, AppState> {
 		stopEnabled : false
 	}
 
+	isFirstCall: boolean = true;
 	searchDebounce: any = null;
+	initialGameState?: IGame = undefined;
 
 	async componentDidMount() {
 		this.setState({
@@ -70,21 +72,41 @@ export class App extends React.PureComponent<{}, AppState> {
 	}
 
 	 onclickNext = async () => {
+		if(this.isFirstCall){
+			this.isFirstCall = false;
+			this.initialGameState = Object.assign({}, this.state.game);
+		}
+
 		const game = await api.getNextStep(this.state.game);
 		
-		this.setState({game, numberOfsteps : this.state.numberOfsteps + 1});
+		this.setState({game, numberOfsteps : this.state.numberOfsteps + 1}, () => {
+			if(this.state.game.amountOfLife === 0)
+			{
+				this.gameOver();
+			}
+		});
+	}
+
+	gameOver = () => {
+		alert("Game Over ------> The amount of life is ZERO");
 	}
 
 	onclickReset = () => {
-		
+		const resetGame = Object.assign({}, this.initialGameState);
+		this.setState({
+			game: resetGame, 
+			numberOfsteps: 0
+		});
 	}
 
 	onclickStart = async () => {
-		while(this.state.game.amountOfLife !== 0 && !this.state.stopEnabled)
-		{
-			await this.onclickNext();
-			await this.timeoutWithPromise(1000);
-		}
+		this.setState({stopEnabled : false}, async () => {
+			while(this.state.game.amountOfLife !== 0 && !this.state.stopEnabled)
+			{
+				await this.onclickNext();
+				await this.timeoutWithPromise(1000);
+			}
+		});
 	}
 
 	timeoutWithPromise = async (time: number) => {
@@ -114,15 +136,15 @@ export class App extends React.PureComponent<{}, AppState> {
 	}
 
 	render() {	
-		const {game} = this.state;
+		const {game, numberOfsteps} = this.state;
 		return (<main>
 			<h1>Game Of Life</h1>
 			<header>
 				<input type="search" placeholder="Search..." onChange={(e) => this.onSearch(e.target.value)}/>
 			</header>
 			<div>
-				<h3>number of lifes : {this.state.game.amountOfLife}</h3>
-				<h3>number of steps : {this.state.numberOfsteps}</h3>
+				<h3>number of lifes : {game.amountOfLife}</h3>
+				<h3>number of steps : {numberOfsteps}</h3>
 			</div>
 			<div>
 				<button className='board-func next' onClick={this.onclickNext}>Next</button>
