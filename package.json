@@ -1,5 +1,5 @@
 {
-  "name": "fizz-entry-level",
+  "name": "@game-of-life/entry-level",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
