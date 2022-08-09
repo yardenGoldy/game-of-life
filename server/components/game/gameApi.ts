@@ -20,7 +20,7 @@ class GameApi  {
             res.send(game);
         });
 
-        this._gameRoutes.post("getNextStep", (req, res) => {
+        this._gameRoutes.post("/getNextStep", (req, res) => {
             var game: IGame = req.body;
             if(!this.validateParams(game))
             {
