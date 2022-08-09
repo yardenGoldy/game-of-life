@@ -1,5 +1,5 @@
 {
-  "name": "@fizz/client",
+  "name": "@game-of-life/client",
   "version": "1.0.0",
   "private": true,
   "dependencies": {
