@@ -4,7 +4,6 @@ import './App.scss';
 import {createApiClient} from './AppApi';
 
 export type AppState = {
-	search: string;
 	game?: IGame,
 	numberOfsteps: number,
 	stopEnabled: boolean
@@ -21,13 +20,11 @@ const api = createApiClient();
 export class App extends React.PureComponent<{}, AppState> {
 
 	state: AppState = {
-		search: '',
 		numberOfsteps : 0,
 		stopEnabled : false
 	}
 
 	isFirstCall: boolean = true; 
-	searchDebounce: any = null;
 	initialGameState?: IGame = undefined;
 
 	async componentDidMount() {
@@ -36,16 +33,6 @@ export class App extends React.PureComponent<{}, AppState> {
 		});
 	}
 
-	onSearch = async (val: string, newPage?: number) => {
-		
-		clearTimeout(this.searchDebounce);
-
-		this.searchDebounce = setTimeout(async () => {
-			this.setState({
-				search: val
-			});
-		}, 300);
-	}
 	onClickCell = (row:number, col:number) =>{
 		this.setState(prevState => {
 			let game = Object.assign({}, prevState.game);
@@ -105,12 +92,6 @@ export class App extends React.PureComponent<{}, AppState> {
 		});
 	}
 
-	timeoutWithPromise = async (time: number) => {
-		return new Promise((resolve, reject) => {
-			setTimeout(resolve, time);
-		})
-	}
-
 	onclickStop = () => {
 		this.setState({stopEnabled : true})
 	}
@@ -135,9 +116,6 @@ export class App extends React.PureComponent<{}, AppState> {
 		const {game, numberOfsteps, stopEnabled} = this.state;
 		return (<main>
 			<h1>Game Of Life</h1>
-			<header>
-				<input type="search" placeholder="Search..." onChange={(e) => this.onSearch(e.target.value)}/>
-			</header>
 			<div>
 				<h3>number of lifes : {game?.amountOfLife}</h3>
 				<h3>number of steps : {numberOfsteps}</h3>
@@ -150,6 +128,12 @@ export class App extends React.PureComponent<{}, AppState> {
 			</div>
 			{game ? this.renderGame(game) : <h2>Loading..</h2>}
 		</main>)
+	}
+
+	private timeoutWithPromise = async (time: number) => {
+		return new Promise((resolve, reject) => {
+			setTimeout(resolve, time);
+		})
 	}
 }
 
