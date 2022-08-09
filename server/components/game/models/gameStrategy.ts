@@ -24,10 +24,10 @@ export class GameStrategy implements IGameStrategy
 
         return updatedBoard;
     }
-
+    
     private updateCellValue = (board: Array<Array<state>>, row:number, col:number): state => {
         const totalNeighbours = this.countNeighbours(board, row, col);
-        if (totalNeighbours > 4 || totalNeighbours < 2) {
+        if (totalNeighbours > 3 || totalNeighbours < 2) {
             return state.unpopulated;
         }
         else if(board[row][col] === state.unpopulated && totalNeighbours === 3)
@@ -55,7 +55,8 @@ export class GameStrategy implements IGameStrategy
 
     private countNeighbour = (board: Array<Array<state>>, row: number, col: number) => {
         try {
-            return board[row][col];
+            const value = board[row][col];
+            return (value == state.populated || value == state.unpopulated) ? value : 0;
         }
         catch {
             return 0;
