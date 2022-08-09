@@ -51,7 +51,7 @@ export class App extends React.PureComponent<{}, AppState> {
 				board[row][col] = state.populated;
 			else
 			{
-				board[row][col] = state.populated;
+				board[row][col] = state.unpopulated;
 			}
 			return {game};
 		});
@@ -84,7 +84,7 @@ export class App extends React.PureComponent<{}, AppState> {
 				board.map((rowValue, rowIndex) => (
 					<div key={rowIndex} className='rows'>
 						{rowValue.map((colValue, colIndex) => (
-							<button className={'cell-button ' + (board[rowIndex][colIndex] === state.unpopulated ? "unpopulated" : "populated")} key={count++} onClick={this.onClickCell.bind(this, rowIndex, colIndex)}></button>
+							<button className={'cell-button ' + (colValue === state.unpopulated ? "unpopulated" : "populated")} key={count++} onClick={this.onClickCell.bind(this, rowIndex, colIndex)}></button>
 						))}
 					</div>
 				))
