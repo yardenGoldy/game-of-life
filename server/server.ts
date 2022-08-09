@@ -3,10 +3,11 @@ import app from "./app";
 import { Application } from "express";
 import * as fs from 'fs';
 import * as util from 'util';
+import {serverAPIPort} from "app-configuration";
 const promisedWriteFile = util.promisify(fs.writeFile);
 const listEndpoints = require('express-list-endpoints')
 class Server {
-    private _port = process.env.PORT || 3500;
+    private _port = process.env.PORT || serverAPIPort;
     private _host = 'localhost';
     private _app: Application;
 
