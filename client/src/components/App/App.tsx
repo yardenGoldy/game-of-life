@@ -5,7 +5,9 @@ import {createApiClient} from './AppApi';
 
 export type AppState = {
 	search: string;
-	game: IGame
+	game: IGame,
+	numberOfsteps: number,
+	stopEnabled: boolean
 }
 
 export enum state
@@ -21,8 +23,11 @@ export class App extends React.PureComponent<{}, AppState> {
 	state: AppState = {
 		search: '',
 		game: {
+			amountOfLife: 0,
 			board: []
-		}
+		},
+		numberOfsteps : 0,
+		stopEnabled : false
 	}
 
 	searchDebounce: any = null;
@@ -48,10 +53,15 @@ export class App extends React.PureComponent<{}, AppState> {
 			let game = Object.assign({}, prevState.game);
 			const board = game.board;
 			if(board[row][col] === state.unpopulated)
+			{
 				board[row][col] = state.populated;
+				game.amountOfLife++;
+			}
+
 			else
 			{
 				board[row][col] = state.unpopulated;
+				game.amountOfLife--;
 			}
 			return {game};
 		});
@@ -61,19 +71,30 @@ export class App extends React.PureComponent<{}, AppState> {
 
 	 onclickNext = async () => {
 		const game = await api.getNextStep(this.state.game);
-		this.setState({game});
+		
+		this.setState({game, numberOfsteps : this.state.numberOfsteps + 1});
 	}
 
 	onclickReset = () => {
-
+		
 	}
 
-	onclickStart = () => {
+	onclickStart = async () => {
+		while(this.state.game.amountOfLife !== 0 && !this.state.stopEnabled)
+		{
+			await this.onclickNext();
+			await this.timeoutWithPromise(1000);
+		}
+	}
 
+	timeoutWithPromise = async (time: number) => {
+		return new Promise((resolve, reject) => {
+			setTimeout(resolve, time);
+		})
 	}
 
 	onclickStop = () => {
-
+		this.setState({stopEnabled : true})
 	}
 
 	renderGame = (game: IGame) => {
@@ -100,10 +121,14 @@ export class App extends React.PureComponent<{}, AppState> {
 				<input type="search" placeholder="Search..." onChange={(e) => this.onSearch(e.target.value)}/>
 			</header>
 			<div>
-				<button className='next' onClick={this.onclickNext}>Next</button>
-				<button className='reset' onClick={this.onclickReset}>Reset</button>
-				<button className='start' onClick={this.onclickStart}>Start</button>
-				<button className='stop' onClick={this.onclickStop}>Stop</button>
+				<h3>number of lifes : {this.state.game.amountOfLife}</h3>
+				<h3>number of steps : {this.state.numberOfsteps}</h3>
+			</div>
+			<div>
+				<button className='board-func next' onClick={this.onclickNext}>Next</button>
+				<button className='board-func reset' disabled={!this.state.stopEnabled} onClick={this.onclickReset}>Reset</button>
+				<button className='board-func start' onClick={this.onclickStart}>Start</button>
+				<button className='board-func stop' onClick={this.onclickStop}>Stop</button>
 			</div>
 			{game ? this.renderGame(game) : <h2>Loading..</h2>}
 		</main>)

@@ -27,8 +27,8 @@ class GameApi  {
                 res.status(400).send("invalid params");
                 return;
             }
-            game.board = this._gameService.getNextStep(game.board);
-            res.send(game);
+            const newGame = this._gameService.getNextStep(game.board);
+            res.send(newGame);
         });
     }
 

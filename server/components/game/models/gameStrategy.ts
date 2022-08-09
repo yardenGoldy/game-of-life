@@ -14,6 +14,16 @@ export class GameStrategy implements IGameStrategy
         return Array(this.ROWS).fill(undefined).map(()=>Array(this.COLS).fill(state.unpopulated))
     }
     
+    getAmountOfLife (board: Array<Array<state>>) : number{
+        let amountOfLife = 0;
+        for (let row = 0; row < this.ROWS; row++) {
+            for (let col = 0; col < this.COLS; col++) {
+              amountOfLife += board[row][col];
+            }
+        }
+        return amountOfLife;
+    }
+    
     updateNextStep = (previousBoard: Array<Array<state>>) => {    
         const updatedBoard = this.initBoard();
         for (let row = 0; row < this.ROWS; row++) {
@@ -24,7 +34,7 @@ export class GameStrategy implements IGameStrategy
 
         return updatedBoard;
     }
-    
+
     private updateCellValue = (board: Array<Array<state>>, row:number, col:number): state => {
         const totalNeighbours = this.countNeighbours(board, row, col);
         if (totalNeighbours > 3 || totalNeighbours < 2) {

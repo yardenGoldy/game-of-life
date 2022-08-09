@@ -1,5 +1,6 @@
 export interface IGame {
     board : Array<Array<state>>
+    amountOfLife: number
 }
 
 export enum state

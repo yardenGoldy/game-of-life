@@ -9,13 +9,18 @@ export class GameService {
     initGame(): IGame
     {
       return {
-        board:this._gameStrategy.initBoard()
+        board:this._gameStrategy.initBoard(),
+        amountOfLife:0
       }
     }
 
-    getNextStep(board: Array<Array<state>>)
+    getNextStep(board: Array<Array<state>>): IGame
     {
-      return this._gameStrategy.updateNextStep(board);
+      const newBoard = this._gameStrategy.updateNextStep(board);
+      return {
+        board: newBoard, 
+        amountOfLife: this._gameStrategy.getAmountOfLife(newBoard)
+      }
     }
     
 } 
