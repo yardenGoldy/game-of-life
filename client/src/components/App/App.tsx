@@ -132,21 +132,21 @@ export class App extends React.PureComponent<{}, AppState> {
 	}
 
 	render() {	
-		const {game, numberOfsteps} = this.state;
+		const {game, numberOfsteps, stopEnabled} = this.state;
 		return (<main>
 			<h1>Game Of Life</h1>
 			<header>
 				<input type="search" placeholder="Search..." onChange={(e) => this.onSearch(e.target.value)}/>
 			</header>
 			<div>
-				<h3>number of lifes : {game.amountOfLife}</h3>
+				<h3>number of lifes : {game?.amountOfLife}</h3>
 				<h3>number of steps : {numberOfsteps}</h3>
 			</div>
 			<div>
-				<button className='board-func next' onClick={this.onclickNext}>Next</button>
-				<button className='board-func reset' disabled={!this.state.stopEnabled} onClick={this.onclickReset}>Reset</button>
-				<button className='board-func start' onClick={this.onclickStart}>Start</button>
-				<button className='board-func stop' onClick={this.onclickStop}>Stop</button>
+				<button className='board-func next' disabled={game?.amountOfLife === 0} onClick={this.onclickNext}>Next</button>
+				<button className='board-func reset' disabled={!stopEnabled} onClick={this.onclickReset}>Reset</button>
+				<button className='board-func start' disabled={game?.amountOfLife === 0} onClick={this.onclickStart}>Start</button>
+				<button className='board-func stop' disabled={game?.amountOfLife === 0} onClick={this.onclickStop}>Stop</button>
 			</div>
 			{game ? this.renderGame(game) : <h2>Loading..</h2>}
 		</main>)
