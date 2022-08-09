@@ -1,3 +1,4 @@
+import gameApi from "./components/game/gameApi";
 import { Router } from "express";
 
 class Routes {
@@ -11,6 +12,7 @@ class Routes {
     }
 
     private initComponentsRoutes() {
+        this._appRoutes.use("/game", gameApi);
     }
 
     get routes(): Router {
