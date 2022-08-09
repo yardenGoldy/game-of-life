@@ -5,7 +5,7 @@ import {createApiClient} from './AppApi';
 
 export type AppState = {
 	search: string;
-	game: IGame,
+	game?: IGame,
 	numberOfsteps: number,
 	stopEnabled: boolean
 }
@@ -22,15 +22,11 @@ export class App extends React.PureComponent<{}, AppState> {
 
 	state: AppState = {
 		search: '',
-		game: {
-			amountOfLife: 0,
-			board: []
-		},
 		numberOfsteps : 0,
 		stopEnabled : false
 	}
 
-	isFirstCall: boolean = true;
+	isFirstCall: boolean = true; 
 	searchDebounce: any = null;
 	initialGameState?: IGame = undefined;
 
@@ -77,10 +73,10 @@ export class App extends React.PureComponent<{}, AppState> {
 			this.initialGameState = Object.assign({}, this.state.game);
 		}
 
-		const game = await api.getNextStep(this.state.game);
+		const game = await api.getNextStep(this.state.game!);
 		
 		this.setState({game, numberOfsteps : this.state.numberOfsteps + 1}, () => {
-			if(this.state.game.amountOfLife === 0)
+			if(this.state.game?.amountOfLife === 0)
 			{
 				this.gameOver();
 			}
@@ -101,7 +97,7 @@ export class App extends React.PureComponent<{}, AppState> {
 
 	onclickStart = async () => {
 		this.setState({stopEnabled : false}, async () => {
-			while(this.state.game.amountOfLife !== 0 && !this.state.stopEnabled)
+			while(this.state.game?.amountOfLife !== 0 && !this.state.stopEnabled)
 			{
 				await this.onclickNext();
 				await this.timeoutWithPromise(1000);
